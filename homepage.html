@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Sustainable Transport Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Sustainable Transport Tracker</h1>
+        <div class="input-section">
+            <p>Current Location: <span id="currentLocation">Detecting...</span></p>
+            <label for="destination">Destination:</label>
+            <input type="text" id="destination" placeholder="Enter destination">
+            
+            <label for="transportMode">Mode of Transport:</label>
+            <select id="transportMode">
+                <option value="bike">Bike</option>
+                <option value="walking">Walking</option>
+                <option value="bus">Bus</option>
+                <option value="train">Train</option>
+                <option value="electric">Electric Vehicle</option>
+            </select>
+        </div>
+        <button id="startTracking">Start Tracking</button>
+        <a href="points.html" class="nav-button">View Points</a>
+        <a href="scanner.html" class="nav-button">Scan QR Code</a>
+        <a href="wallet.html" class="nav-button">Crypto Wallet</a>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

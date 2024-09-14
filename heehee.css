@@ -1,0 +1,47 @@
+body {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #fff;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button#startTracking {
+    background-color: #4CAF50;
+    color: white;
+}
+
+a.nav-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 1em;
+    color: white;
+    background-color: #2196F3;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+a.nav-button:hover {
+    background-color: #1976D2;
+}
