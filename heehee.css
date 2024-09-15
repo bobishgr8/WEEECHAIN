@@ -1,47 +1,20 @@
-body {
-    font-family: 'Times New Roman', Times, serif;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    text-align: center;
-    padding: 20px;
-}
-
-input, select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #fff;
-    border-radius: 5px;
-}
-
-button {
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button#startTracking {
-    background-color: #4CAF50;
-    color: white;
-}
-
-a.nav-button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 1em;
-    color: white;
-    background-color: #2196F3;
-    text-decoration: none;
-    border-radius: 5px;
-}
-
-a.nav-button:hover {
-    background-color: #1976D2;
-}
+#main-content{
+    position: absolute;
+    top: 40%;
+    left: 30%;
+    right:30%;
+    z-index: 10;
+    animation: fadeIn ease 3s;
+    -webkit-animation: fadeIn ease 3s;
+    -moz-animation: fadeIn ease 3s;
+    -o-animation: fadeIn ease 3s;
+    -ms-animation: fadeIn ease 3s;
+  }
+  @keyframes fadeIn {
+    0% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+    }
+  }
