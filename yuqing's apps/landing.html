@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+        <link rel="stylesheet" href="static/landing.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    </head>
+    <body>
+      <section class="hero is-success is-bold is-fullheight has-bg-img">
+        <!-- Hero head: will stick at the top -->
+        <div class="hero-head">
+          <header class="navbar">
+            <div class="container">
+              <div class="navbar-brand">
+                <a class="navbar-item">
+                  <span><a href="/"><img src="graphics/bannerlogo.png" alt="logo" style="max-height: 60px;"></a></span>
+                </a>
+                <span class="navbar-burger burger" onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
+              </div>
+              <div id="navbarMenuHeroC" class="navbar-menu">
+                <div class="navbar-end">
+                  <a class="navbar-item is-active" href="/">
+                    Home
+                  </a>
+                  <a class="navbar-item" href="/my-trips">
+                    My trips
+                  </a>
+                  <a class="navbar-item" href="/nfc!">
+                    NFC
+                  </a>
+                  <span class="navbar-item">
+                    <a class="button is-info is-inverted" href="https://github.com/bobishgr8">
+                      <span class="icon">
+                        <i class="fab fa-github"></i>
+                      </span>
+                      <span>Github</span>
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </header>
+        </div>
+      
+        <!-- Hero content: will be in the middle -->
+        <div class="hero-body has-bg-img" id="particles-js">
+          <div class="container has-text-centered" id="main-content">
+            <h1 class="title">
+              B3tter Move!
+            </h1>
+            <h2 class="subtitle">
+              Riding into a new era of sustainability!
+            </h2>
+          
+          <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+          <script src="static/js/app.js"></script>
+          <script src="static/js/lib/stats.js"></script>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <h1 class="title">About me</h1>
+          <h2 class="subtitle">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora laudantium temporibus velit assumenda deserunt fugit, omnis repudiandae iste fuga hic impedit in ipsa voluptatum nemo ab, unde doloribus eligendi praesentium. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Totam suscipit aspernatur rerum dignissimos commodi! Eaque ex obcaecati laborum a ipsa deleniti ipsum in libero iure soluta nemo, earum laboriosam ratione?
+          </h2>
+        </div>
+      </section>
+
+      <!-- biz nez logic-->
+      <section class="section">
+        <div class="container">
+          <h1 class="title">Trip Tracker</h1>
+    
+          <div class="buttons">
+            <button id="startTripBtn" class="button is-primary">
+              <span class="icon"><i class="fas fa-play"></i></span>
+              <span>Start Trip</span>
+            </button>
+            <button id="stopTripBtn" class="button is-danger" disabled>
+              <span class="icon"><i class="fas fa-stop"></i></span>
+              <span>Stop Trip</span>
+            </button>
+            <a href="analytics.html" class="button is-info">
+              <span class="icon"><i class="fas fa-chart-bar"></i></span>
+              <span>View Analytics</span>
+            </a>
+          </div>
+    
+          <div id="status" class="notification is-info mt-3 fade-in" style="display: none;">
+            <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+            Tracking location and calculating speed...
+          </div>
+    
+          <div id="locationData" class="box mt-5 fade-in">
+            <h2 class="subtitle">Latest Location & Mode of Transport</h2>
+            <p id="latestCoords">Lat: -, Long: -</p>
+            <p id="modeOfTransport">Mode of transport: -</p>
+          </div>
+    
+          <div id="tripSummary" class="box mt-5 fade-in" style="display: none;">
+            <h2 class="subtitle">Trip Summary</h2>
+            <p id="totalDistance">Total distance: - meters</p>
+            <ul id="distanceBreakdown"></ul>
+            <p class="carbon-saved" id="carbonSaved">Carbon saved: - kg CO₂</p>
+          </div>
+        </div>
+      </section>
+    
+      <script>
+        let watchId = null;
+        let lastPosition = null;
+        let lastTimestamp = null;
+        let totalDistance = 0;
+    
+        const distanceThreshold = 100; // Maximum allowed distance between two points (in meters)
+        const speedThreshold = 50; // Maximum allowed speed (in m/s)
+        const timeThreshold = 5000; // Minimum time between updates (in milliseconds)
+    
+        const carbonEmissionsPerKm = {
+          Walking: 0, // kg CO₂ per kilometer
+          Running: 0, // kg CO₂ per kilometer
+          Biking: 0, // kg CO₂ per kilometer
+          Bus: 0.089, // kg CO₂ per kilometer
+          Train: 0.041, // kg CO₂ per kilometer
+          Driving: 0.24, // kg CO₂ per kilometer (reference car emissions)
+          Stationary: 0
+        };
+    
+        const distanceByMode = {
+          Walking: 0,
+          Running: 0,
+          Biking: 0,
+          Bus: 0,
+          Train: 0,
+          Driving: 0,
+          Stationary: 0
+        };
+    
+        const startTripBtn = document.getElementById('startTripBtn');
+        const stopTripBtn = document.getElementById('stopTripBtn');
+        const status = document.getElementById('status');
+        const latestCoords = document.getElementById('latestCoords');
+        const modeOfTransport = document.getElementById('modeOfTransport');
+        const totalDistanceElem = document.getElementById('totalDistance');
+        const distanceBreakdown = document.getElementById('distanceBreakdown');
+        const carbonSavedElem = document.getElementById('carbonSaved');
+        const tripSummary = document.getElementById('tripSummary');
+    
+        function calculateSpeedAndTransport(currentPosition) {
+          const { latitude, longitude, accuracy } = currentPosition.coords;
+          const currentTimestamp = currentPosition.timestamp;
+    
+          let transportMode = 'Stationary';
+    
+          if (lastPosition && lastTimestamp) {
+            const distance = calculateDistance(
+              lastPosition.coords.latitude,
+              lastPosition.coords.longitude,
+              latitude,
+              longitude
+            );
+    
+            const timeElapsed = (currentTimestamp - lastTimestamp) / 1000; // in seconds
+            const speed = distance / timeElapsed; // meters per second
+    
+            // Only process if distance and speed are reasonable
+            if (distance < distanceThreshold && speed < speedThreshold && timeElapsed >= timeThreshold / 1000) {
+              if (speed > 0 && speed <= 1.25) {
+                transportMode = 'Walking';
+              } else if (speed > 1.25 && speed <= 3.0) {
+                transportMode = 'Running';
+              } else if (speed > 3.0 && speed <= 6.0) {
+                transportMode = 'Biking';
+              } else if (speed > 6.0 && speed <= 20.0) {
+                transportMode = 'Bus';
+              } else if (speed > 20.0 && speed <= 33.0) {
+                transportMode = 'Train';
+              } else if (speed > 33.0) {
+                transportMode = 'Driving';
+              }
+    
+              // Update the total distance for the mode of transport
+              distanceByMode[transportMode] += distance;
+              totalDistance += distance;
+            }
+          }
+    
+          // Update the latest position and timestamp
+          lastPosition = currentPosition;
+          lastTimestamp = currentTimestamp;
+    
+          // Update UI with latest coordinates
+          latestCoords.textContent = `Lat: ${latitude}, Long: ${longitude}`;
+          modeOfTransport.textContent = `Mode of transport: ${transportMode}`;
+        }
+    
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+          const R = 6371000; // Earth radius in meters
+          const toRadians = angle => (angle * Math.PI) / 180;
+    
+          const dLat = toRadians(lat2 - lat1);
+          const dLon = toRadians(lon2 - lon1);
+    
+          const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    
+          return R * c; // Distance in meters
+        }
+    
+        function calculateCarbonSavings() {
+          let carbonSaved = 0;
+          let totalCarbonForCar = 0;
+    
+          for (let mode in distanceByMode) {
+            const distanceInKm = distanceByMode[mode] / 1000; // Convert meters to kilometers
+            const emissionsForMode = carbonEmissionsPerKm[mode] * distanceInKm;
+            const carEmissions = carbonEmissionsPerKm['Driving'] * distanceInKm;
+    
+            totalCarbonForCar += carEmissions; // Calculate the emissions if the person used a car for the same trip
+            carbonSaved += carEmissions - emissionsForMode; // Emissions saved compared to driving
+          }
+    
+          return carbonSaved.toFixed(2); // Return the amount of CO₂ saved in kg
+        }
+    
+        function saveTripToLocalStorage(tripData) {
+          let trips = JSON.parse(localStorage.getItem('trips')) || [];
+          trips.push(tripData);
+          localStorage.setItem('trips', JSON.stringify(trips));
+        }
+    
+        startTripBtn.addEventListener('click', () => {
+          watchId = navigator.geolocation.watchPosition(calculateSpeedAndTransport, () => {}, {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          });
+          status.style.display = 'block';
+          startTripBtn.disabled = true;
+          stopTripBtn.disabled = false;
+          tripSummary.style.display = 'none';
+        });
+    
+        stopTripBtn.addEventListener('click', () => {
+          if (watchId) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+            status.style.display = 'none';
+            startTripBtn.disabled = false;
+            stopTripBtn.disabled = true;
+    
+            // Calculate total carbon saved
+            const carbonSaved = calculateCarbonSavings();
+    
+            // Display trip summary
+            tripSummary.style.display = 'block';
+            totalDistanceElem.textContent = `Total distance: ${totalDistance.toFixed(2)} meters`;
+            distanceBreakdown.innerHTML = '';
+            for (let mode in distanceByMode) {
+              if (distanceByMode[mode] > 0) {
+                const li = document.createElement('li');
+                li.textContent = `${mode}: ${distanceByMode[mode].toFixed(2)} meters`;
+                distanceBreakdown.appendChild(li);
+              }
+            }
+            carbonSavedElem.textContent = `Carbon saved: ${carbonSaved} kg CO₂`;
+    
+            // Save trip data to localStorage with the current date and time
+            const tripData = {
+              date: new Date().toLocaleString(), // Save the current date and time
+              total_distance: totalDistance.toFixed(2),
+              carbon_saved: carbonSaved,
+              distance_by_mode: { ...distanceByMode }
+            };
+            saveTripToLocalStorage(tripData);
+    
+            // Reset distances for next trip
+            totalDistance = 0;
+            for (let mode in distanceByMode) distanceByMode[mode] = 0;
+          }
+        });
+    </script>
+    
+    
+      <section class="section">
+        <div class="container">
+          <h1 class="title">How this app words</h1>
+          <h2 class="subtitle">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia ut placeat sapiente consequatur, repellat illo non rem minima quos, possimus ipsa amet alias, magnam dolores! Saepe architecto veniam iusto id?
+          </h2>
+        </div>
+        <!--to do add a start trip end trip function here-->
+      </section>
+      <footer class="footer">
+        <div class="columns is-1-mobile">
+          <div class="column">
+            <div class="field is-grouped is-grouped-multiline">
+              <div class="control">
+                <div class="tags has-addons">
+                  <span class="tag is-dark">build</span>
+                  <span class="tag is-success">prototype</span>
+                </div>
+              </div>
+              <div class="control">
+                <div class="tags has-addons">
+                  <span class="tag is-dark">VeChain</span>
+                  <span class="tag is-info">Web3</span>
+                </div>
+              </div>
+            </div>
+            <p>This website is built for VeChain x EasyA x BCG hackathon. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </body>
+</html>

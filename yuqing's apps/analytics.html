@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trip Analytics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <style>
+    .icon {
+      margin-right: 5px;
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .carbon-saved {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #23d160;
+    }
+    .tokens-earned {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #3273dc;
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">Trip Analytics</h1>
+
+      <div class="box fade-in">
+        <h2 class="subtitle">
+          <span class="icon"><i class="fas fa-list-alt"></i></span>Your Past Trips
+        </h2>
+        <ul id="tripList"></ul>
+        <p class="tokens-earned" id="totalTokens">Total Better Tokens Earned: 0</p>
+      </div>
+
+      <a href="index.html" class="button is-primary">
+        <span class="icon"><i class="fas fa-arrow-left"></i></span>
+        <span>Back to Trip Tracker</span>
+      </a>
+    </div>
+  </section>
+
+  <script>
+    function loadTripsFromLocalStorage() {
+      let trips = JSON.parse(localStorage.getItem('trips')) || [];
+      const tripList = document.getElementById('tripList');
+      const totalTokensElem = document.getElementById('totalTokens');
+      let totalTokens = 0;
+
+      if (trips.length === 0) {
+        tripList.innerHTML = '<li>No trips recorded yet.</li>';
+      } else {
+        trips.forEach(trip => {
+          const tokensEarned = parseFloat(trip.carbon_saved); // 1 Better Token per kg CO₂ saved
+          totalTokens += tokensEarned;
+
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <strong><span class="icon"><i class="fas fa-calendar"></i></span>Date:</strong> ${trip.date}<br>
+            <strong><span class="icon"><i class="fas fa-road"></i></span>Total Distance:</strong> ${trip.total_distance} meters<br>
+            <strong><span class="icon"><i class="fas fa-leaf"></i></span>Carbon saved:</strong> ${trip.carbon_saved} kg CO₂<br>
+            <strong><span class="icon"><i class="fas fa-coins"></i></span>Better Tokens Earned:</strong> ${tokensEarned.toFixed(2)} tokens
+            <ul>
+              ${Object.keys(trip.distance_by_mode)
+                .map(mode => `<li>${mode}: ${trip.distance_by_mode[mode]} meters</li>`)
+                .join('')}
+            </ul>
+            <hr>`;
+          tripList.appendChild(li);
+        });
+
+        // Update the total Better Tokens earned
+        totalTokensElem.textContent = `Total Better Tokens Earned: ${totalTokens.toFixed(2)} tokens`;
+      }
+    }
+
+    window.onload = loadTripsFromLocalStorage;
+  </script>
+</body>
+</html>
