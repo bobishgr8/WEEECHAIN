@@ -4,30 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Sustainable Transport Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="heehee.css">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Sustainable Transport Tracker</h1>
-        <div class="input-section">
-            <p>Current Location: <span id="currentLocation">Detecting...</span></p>
-            <label for="destination">Destination:</label>
-            <input type="text" id="destination" placeholder="Enter destination">
-            
-            <label for="transportMode">Mode of Transport:</label>
-            <select id="transportMode">
-                <option value="bike">Bike</option>
-                <option value="walking">Walking</option>
-                <option value="bus">Bus</option>
-                <option value="train">Train</option>
-                <option value="electric">Electric Vehicle</option>
-            </select>
+    <section class="hero is-success is-halfheight is-bold">
+        <div class="hero-head">
+          <nav class="navbar">
+            <div class="container">
+              <div class="navbar-brand">
+                <a class="navbar-item">
+                  <img src="graphics/bannerlogo.png" alt="Logo" />
+                </a>
+                <span class="navbar-burger" data-target="navbarMenuHeroB">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
+              </div>
+              <div id="navbarMenuHeroB" class="navbar-menu">
+                <div class="navbar-end">
+                  <a class="navbar-item is-active"> Home </a>
+                  <a class="navbar-item"> My credits </a>
+                  <a class="navbar-item"> Documentation </a>
+                  <span class="navbar-item">
+                    <a class="button is-info is-inverted">
+                      <span class="icon">
+                        <i class="fab fa-github"></i>
+                      </span>
+                      <span>Download</span>
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </nav>
         </div>
-        <button id="startTracking">Start Tracking</button>
-        <a href="points.html" class="nav-button">View Points</a>
-        <a href="scanner.html" class="nav-button">Scan QR Code</a>
-        <a href="wallet.html" class="nav-button">Crypto Wallet</a>
-    </div>
-    <script src="script.js"></script>
+      
+        <div class="hero-body has-bg-img" id="particles-js">
+          <div class="container has-text-centered">
+            <p class="title">B3tter Move</p>
+            <p class="subtitle">Move</p>
+            <canvas class="particles-js-canvas-el" width="823" height="412" style="width: 100%; height: 100%;"></canvas>
+          </div>
+        </div>
+      </section>
+
 </body>
 </html>
