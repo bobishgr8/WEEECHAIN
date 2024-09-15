@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thirdweb Integration</title>
+    <!-- Thirdweb SDK CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@thirdweb-dev/wallets@latest/dist/thirdweb-wallets.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@thirdweb-dev/react@latest/dist/thirdweb-react.min.js"></script>
+    <style>
+        /* Basic styles for the button */
+        #connectButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Login</h1>
+    <button id="connectButton">Connect Wallet</button>
+
+    <script>
+        // Initialize Thirdweb client
+        const client = thirdweb.createThirdwebClient({
+            clientId: "your-client-id-here", // Replace with your actual client ID
+        });
+
+        // Define wallets
+        const wallets = [
+            thirdweb.inAppWallet({
+                auth: {
+                    options: [
+                        "google",
+                        "discord",
+                        "telegram",
+                        "farcaster",
+                        "email",
+                        "x",
+                        "passkey",
+                        "phone",
+                    ],
+                },
+            }),
+            thirdweb.createWallet("io.metamask"),
+            thirdweb.createWallet("com.coinbase.wallet"),
+            thirdweb.createWallet("me.rainbow"),
+            thirdweb.createWallet("io.rabby"),
+            thirdweb.createWallet("io.zerion.wallet"),
+        ];
+
+        // Handle button click
+        document.getElementById('connectButton').addEventListener('click', async () => {
+            try {
+                // Create and show the connection modal
+                const result = await client.connect({
+                    wallets,
+                    connectModal: { size: 'compact' }
+                });
+                console.log('Connected:', result);
+            } catch (error) {
+                console.error('Connection failed:', error);
+            }
+        });
+    </script>
+</body>
+</html>
